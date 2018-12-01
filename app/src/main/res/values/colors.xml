@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fafafa</color>
+    <color name="colorPrimaryDark">#c7c7c7</color>
+    <color name="colorPrimaryLight">#ffffff</color>
+
+    <color name="colorSecondary">#00796b</color>
+    <color name="colorSecondaryDark">#004c40</color>
+    <color name="colorSecondaryLight">#48a999</color>
+
+    <color name="colorSecondarySelected">#3000796b</color>
+
+    <color name="darkGray">#616161</color>
+    <color name="deleteRed">#d50000</color>
+</resources>
