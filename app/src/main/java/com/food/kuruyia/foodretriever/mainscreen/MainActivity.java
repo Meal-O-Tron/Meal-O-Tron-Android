@@ -15,6 +15,7 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
@@ -193,7 +194,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onWSConnectionStatusChanged(boolean isConnected) {
         if (!isConnected)
-            m_serviceCommunicator.connectWebsocket(m_serverAddress);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    m_serviceCommunicator.connectWebsocket(m_serverAddress);
+                }
+            }, 1000);
     }
 
     @Override
