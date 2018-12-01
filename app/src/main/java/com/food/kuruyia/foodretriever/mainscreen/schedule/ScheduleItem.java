@@ -14,11 +14,12 @@ public class ScheduleItem implements Parcelable, Comparable<ScheduleItem> {
     private boolean m_enabled = true;
     private int m_id;
 
-    ScheduleItem(int hour, int minutes, int ratio, int id) {
+    ScheduleItem(int hour, int minutes, int ratio, int id, boolean enabled) {
         m_hour = hour;
         m_minutes = minutes;
         m_ratio = ratio;
         m_id = id;
+        m_enabled = enabled;
     }
 
     ScheduleItem(ScheduleItem item) {

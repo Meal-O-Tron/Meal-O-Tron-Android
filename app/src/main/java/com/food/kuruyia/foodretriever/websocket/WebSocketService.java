@@ -148,8 +148,6 @@ public class WebSocketService extends Service {
             m_webSocketConnected = false;
             Log.d(TAG, "WebSocket failed");
 
-            Log.e(TAG, t.getMessage());
-
             Message readMsg = m_handler.obtainMessage(MESSAGE_CONNECTION_CHANGED);
             readMsg.sendToTarget();
         }

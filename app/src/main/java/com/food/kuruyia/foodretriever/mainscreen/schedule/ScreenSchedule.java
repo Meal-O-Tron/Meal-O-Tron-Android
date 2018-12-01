@@ -133,11 +133,6 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 data.put("minute", minute);
 
                 sendRequest(RequestFormatter.format(DataType.DATA_SCHEDULE_ADD, data));
-
-                int pos = m_dataSchedule.addItem(new ScheduleItem(hourOfDay, minute, 0, m_dataSchedule.getScheduledItems().size()));
-
-                if (pos >= 0)
-                    m_adapter.notifyItemInserted(pos);
             }
         }, Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), DateFormat.is24HourFormat(getActivity())).show();
     }
@@ -151,6 +146,21 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
     public void onDataChanged(DataType dataType, HashMap<String, Object> data) {
         // TODO: Handle schedule messages
         switch (dataType) {
+            case DATA_SCHEDULE_ADD: {
+                Object hour = data.get("hour");
+                Object minute = data.get("minute");
+                Object ratio = data.get("ratio");
+                Object id = data.get("id");
+                Object enabled = data.get("enabled");
+                if (hour != null && minute != null && ratio != null && id != null && enabled != null) {
+                    int pos = m_dataSchedule.addItem(new ScheduleItem(((Double)hour).intValue(), ((Double)minute).intValue(), ((Double)ratio).intValue(), ((Double)id).intValue(), (boolean)enabled));
+
+                    if (pos >= 0)
+                        m_adapter.notifyItemInserted(pos);
+                }
+
+                break;
+            }
             case DATA_SCHEDULE_ENABLE: {
 
             }

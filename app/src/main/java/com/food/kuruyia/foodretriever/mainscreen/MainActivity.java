@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements MenuBottomSheet.NavigationItemSelected, WebSocketServiceCommunicator.IWebSocketStateChange, WebSocketServiceCommunicator.IWebSocketMessage {
@@ -188,7 +189,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWSFailure() {
-
+        // TODO: Close MainActivity, go to ConnectActivity
+        Toast.makeText(this, "Server disconnected", Toast.LENGTH_LONG).show();
     }
 
     @Override
