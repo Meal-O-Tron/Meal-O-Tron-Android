@@ -3,6 +3,7 @@ package com.food.kuruyia.foodretriever.mainscreen.schedule;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,14 +164,36 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 if (id != null) {
                     final int pos = m_dataSchedule.findItemById(((Double)id).intValue());
 
-                    m_dataSchedule.removeItem(pos);
-                    m_adapter.notifyItemRemoved(pos);
+                    if (pos >= 0) {
+                        m_dataSchedule.removeItem(pos);
+                        m_adapter.notifyItemRemoved(pos);
+                    }
                 }
 
                 break;
             }
             case DATA_SCHEDULE_ENABLE: {
+                Object id = data.get("id");
+                Object value = data.get("value");
+                if (id != null && value != null) {
+                    final int pos = m_dataSchedule.findItemById(((Double)id).intValue());
 
+                    if (pos >= 0) {
+                        boolean val = (boolean)value;
+                        ScheduleItem item = m_dataSchedule.getItem(pos);
+
+                        if (item.isEnabled() != val) {
+                            m_dataSchedule.getItem(pos).setEnabled((boolean)value);
+                            m_adapter.notifyItemChanged(pos);
+
+                            Log.d(TAG, "nskip");
+                        } else {
+                            Log.d(TAG, "skip");
+                        }
+                    }
+                }
+
+                break;
             }
             case DATA_SCHEDULE_RATIO: {
                 setOverallRatioData(m_dataSchedule.getUsedRatio());

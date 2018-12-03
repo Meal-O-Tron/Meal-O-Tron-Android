@@ -112,6 +112,7 @@ public class WebSocketServiceCommunicator {
     public void sendMessage(String message) {
         if (m_bound) {
             m_webSocketService.sendRequest(message);
+            Log.d(TAG, "WS Send: " + message);
         }
     }
 

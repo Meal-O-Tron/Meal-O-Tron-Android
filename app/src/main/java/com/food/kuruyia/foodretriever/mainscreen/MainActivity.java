@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWSMessage(String message) {
-        Log.d(TAG, "WS: " + message);
+        Log.d(TAG, "WS Received: " + message);
 
         ResponseParser parser = new ResponseParser(message);
         if (parser.isReady()) {

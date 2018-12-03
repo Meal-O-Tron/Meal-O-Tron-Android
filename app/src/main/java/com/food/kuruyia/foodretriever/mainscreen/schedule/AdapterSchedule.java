@@ -104,7 +104,10 @@ public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ASView
         holder.m_enableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                notifyChangeToFragment(DataType.DATA_SCHEDULE_ENABLE, getRequestData(currentItem.getId(), isChecked));
+                if (currentItem.isEnabled() != isChecked) {
+                    currentItem.setEnabled(isChecked);
+                    notifyChangeToFragment(DataType.DATA_SCHEDULE_ENABLE, getRequestData(currentItem.getId(), isChecked));
+                }
             }
         });
     }
