@@ -43,14 +43,14 @@ public class DataSchedule implements Parcelable, IDataChange {
         return m_scheduledItems.get(position);
     }
 
-    ScheduleItem findItemById(int id) {
+    int findItemById(int id) {
         for (int i = 0; i < m_scheduledItems.size(); i++) {
             ScheduleItem currentItem = m_scheduledItems.get(i);
             if (currentItem.getId() == id)
-                return currentItem;
+                return i;
         }
 
-        return null;
+        return -1;
     }
 
     int getUsedRatio() {

@@ -99,8 +99,6 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 deleteSnackbar.setAction(R.string.string_undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: Remove addItem
-                        m_adapter.notifyItemInserted(m_dataSchedule.addItem(savedItem));
                         HashMap<String, Object> data = new HashMap<>();
                         data.put("hour", savedItem.getHour());
                         data.put("minute", savedItem.getMinutes());
@@ -127,7 +125,6 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
         new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                // TODO: Remove addItem
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("hour", hourOfDay);
                 data.put("minute", minute);
@@ -157,6 +154,17 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
 
                     if (pos >= 0)
                         m_adapter.notifyItemInserted(pos);
+                }
+
+                break;
+            }
+            case DATA_SCHEDULE_REMOVE: {
+                Object id = data.get("id");
+                if (id != null) {
+                    final int pos = m_dataSchedule.findItemById(((Double)id).intValue());
+
+                    m_dataSchedule.removeItem(pos);
+                    m_adapter.notifyItemRemoved(pos);
                 }
 
                 break;
