@@ -88,8 +88,8 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
 
                 final ScheduleItem savedItem = new ScheduleItem(m_dataSchedule.getItem(position));
 
-                HashMap<String, Object> data = new HashMap<>();
-                data.put("id", savedItem.getId());
+                JsonObject data = new JsonObject();
+                data.addProperty("id", savedItem.getId());
 
                 onChangeData(DataType.DATA_SCHEDULE_REMOVE, data);
 
@@ -100,11 +100,11 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 deleteSnackbar.setAction(R.string.string_undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        HashMap<String, Object> data = new HashMap<>();
-                        data.put("hour", savedItem.getHour());
-                        data.put("minute", savedItem.getMinutes());
-                        data.put("ratio", savedItem.getRatio());
-                        data.put("enabled", savedItem.isEnabled());
+                        JsonObject data = new JsonObject();
+                        data.addProperty("hour", savedItem.getHour());
+                        data.addProperty("minute", savedItem.getMinutes());
+                        data.addProperty("ratio", savedItem.getRatio());
+                        data.addProperty("enabled", savedItem.isEnabled());
 
                         onChangeData(DataType.DATA_SCHEDULE_ADD, data);
                     }
@@ -126,9 +126,9 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
         new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                HashMap<String, Object> data = new HashMap<>();
-                data.put("hour", hourOfDay);
-                data.put("minute", minute);
+                JsonObject data = new JsonObject();
+                data.addProperty("hour", hourOfDay);
+                data.addProperty("minute", minute);
 
                 sendRequest(RequestFormatter.format(DataType.DATA_SCHEDULE_ADD, data));
             }
@@ -201,7 +201,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
     }
 
     @Override
-    public void onChangeData(DataType dataType, HashMap<String, Object> data) {
+    public void onChangeData(DataType dataType, JsonObject data) {
         sendRequest(RequestFormatter.format(dataType, data));
     }
 

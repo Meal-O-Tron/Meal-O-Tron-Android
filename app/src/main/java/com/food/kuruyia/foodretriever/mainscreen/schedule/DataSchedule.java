@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class DataSchedule implements Parcelable, IDataChange {
     private ArrayList<ScheduleItem> m_scheduledItems = new ArrayList<>();
@@ -111,7 +110,7 @@ public class DataSchedule implements Parcelable, IDataChange {
     }
 
     @Override
-    public void onChangeData(DataType dataType, HashMap<String, Object> data) {
+    public void onChangeData(DataType dataType, JsonObject data) {
         for (int i = 0; i < m_dataChangedListeners.size(); i++)
             m_dataChangedListeners.get(i).onChangeData(dataType, data);
     }

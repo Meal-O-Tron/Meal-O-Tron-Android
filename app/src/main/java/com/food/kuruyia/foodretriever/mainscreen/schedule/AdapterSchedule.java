@@ -16,6 +16,10 @@ import com.food.kuruyia.foodretriever.R;
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.utils.IDataChange;
 import com.food.kuruyia.foodretriever.utils.IDialogScheduleRatioInteract;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,16 +129,19 @@ public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ASView
         return m_dataset.size();
     }
 
-    private void notifyChangeToFragment(DataType dataType, HashMap<String, Object> data) {
+    private void notifyChangeToFragment(DataType dataType, JsonObject data) {
         if (m_activity instanceof IDataChange)
             ((IDataChange)m_activity).onChangeData(dataType, data);
     }
 
-    private <T> HashMap<String, Object> getRequestData(int id, T data) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("id", id);
-        hashMap.put("value", data);
+    private <T> JsonObject getRequestData(int id, T data) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", id);
 
-        return hashMap;
+        Gson gson = new GsonBuilder().create();
+        JsonElement element = gson.toJsonTree(data);
+        jsonObject.add("value", element);
+
+        return jsonObject;
     }
 }
