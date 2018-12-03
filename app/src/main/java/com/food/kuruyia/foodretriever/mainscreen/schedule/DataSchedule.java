@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.utils.IDataChange;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,7 +105,7 @@ public class DataSchedule implements Parcelable, IDataChange {
     }
 
     @Override
-    public void onDataChanged(DataType dataType, HashMap<String, Object> data) {
+    public void onDataChanged(DataType dataType, JsonObject data) {
         for (int i = 0; i < m_dataChangedListeners.size(); i++)
             m_dataChangedListeners.get(i).onDataChanged(dataType, data);
     }

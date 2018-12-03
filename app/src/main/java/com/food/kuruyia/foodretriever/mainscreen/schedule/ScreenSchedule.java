@@ -3,7 +3,6 @@ package com.food.kuruyia.foodretriever.mainscreen.schedule;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.food.kuruyia.foodretriever.utils.IFabInteract;
 import com.food.kuruyia.foodretriever.R;
 import com.food.kuruyia.foodretriever.websocket.RequestFormatter;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonObject;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -141,17 +141,18 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
     }
 
     @Override
-    public void onDataChanged(DataType dataType, HashMap<String, Object> data) {
+    public void onDataChanged(DataType dataType, JsonObject data) {
         // TODO: Handle schedule messages
         switch (dataType) {
             case DATA_SCHEDULE_ADD: {
-                Object hour = data.get("hour");
-                Object minute = data.get("minute");
-                Object ratio = data.get("ratio");
-                Object id = data.get("id");
-                Object enabled = data.get("enabled");
-                if (hour != null && minute != null && ratio != null && id != null && enabled != null) {
-                    int pos = m_dataSchedule.addItem(new ScheduleItem(((Double)hour).intValue(), ((Double)minute).intValue(), ((Double)ratio).intValue(), ((Double)id).intValue(), (boolean)enabled));
+                if (data.has("hour") && data.has("minute") && data.has("ratio") && data.has("id") && data.has("enabled")) {
+                    int hour = data.get("hour").getAsInt();
+                    int minute = data.get("minute").getAsInt();
+                    int ratio = data.get("ratio").getAsInt();
+                    int id = data.get("id").getAsInt();
+                    boolean enabled = data.get("enabled").getAsBoolean();
+
+                    int pos = m_dataSchedule.addItem(new ScheduleItem(hour, minute, ratio, id, enabled));
 
                     if (pos >= 0)
                         m_adapter.notifyItemInserted(pos);
@@ -160,9 +161,10 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 break;
             }
             case DATA_SCHEDULE_REMOVE: {
-                Object id = data.get("id");
-                if (id != null) {
-                    final int pos = m_dataSchedule.findItemById(((Double)id).intValue());
+                if (data.has("id")) {
+                    int id = data.get("id").getAsInt();
+
+                    final int pos = m_dataSchedule.findItemById(id);
 
                     if (pos >= 0) {
                         m_dataSchedule.removeItem(pos);
@@ -173,22 +175,18 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 break;
             }
             case DATA_SCHEDULE_ENABLE: {
-                Object id = data.get("id");
-                Object value = data.get("value");
-                if (id != null && value != null) {
-                    final int pos = m_dataSchedule.findItemById(((Double)id).intValue());
+                if (data.has("id") && data.has("value")) {
+                    int id = data.get("id").getAsInt();
+                    boolean value = data.get("value").getAsBoolean();
+
+                    final int pos = m_dataSchedule.findItemById(id);
 
                     if (pos >= 0) {
-                        boolean val = (boolean)value;
                         ScheduleItem item = m_dataSchedule.getItem(pos);
 
-                        if (item.isEnabled() != val) {
-                            m_dataSchedule.getItem(pos).setEnabled((boolean)value);
+                        if (item.isEnabled() != value) {
+                            m_dataSchedule.getItem(pos).setEnabled(value);
                             m_adapter.notifyItemChanged(pos);
-
-                            Log.d(TAG, "nskip");
-                        } else {
-                            Log.d(TAG, "skip");
                         }
                     }
                 }

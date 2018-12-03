@@ -30,8 +30,7 @@ public class ResponseParser {
         return DataType.values()[m_json.get("type").getAsInt()];
     }
 
-    public HashMap<String, Object> getData() {
-        Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
-        return new Gson().fromJson(m_json.getAsJsonObject("data"), type);
+    public JsonObject getData() {
+        return m_json.get("data").getAsJsonObject();
     }
 }
