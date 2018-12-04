@@ -194,7 +194,20 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                 break;
             }
             case DATA_SCHEDULE_RATIO: {
-                setOverallRatioData(m_dataSchedule.getUsedRatio());
+                if (data.has("id") && data.has("value")) {
+                    int id = data.get("id").getAsInt();
+                    int ratio = data.get("value").getAsInt();
+
+                    final int pos = m_dataSchedule.findItemById(id);
+
+                    if (pos >= 0) {
+                        m_dataSchedule.getItem(pos).setRatio(ratio);
+                        m_adapter.notifyItemChanged(pos);
+                    }
+
+                    setOverallRatioData(m_dataSchedule.getUsedRatio());
+                }
+
                 break;
             }
         }
