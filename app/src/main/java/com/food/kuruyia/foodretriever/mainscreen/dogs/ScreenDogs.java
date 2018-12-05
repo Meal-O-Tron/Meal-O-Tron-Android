@@ -77,10 +77,12 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (!m_dataDogs.getDogName().equals(m_inputDogName.getEditText().getText().toString()))
-                        m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.warningOrange));
-                    else
-                        m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
+                    if (isAdded()) {
+                        if (!m_dataDogs.getDogName().equals(m_inputDogName.getEditText().getText().toString()))
+                            m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.warningOrange));
+                        else
+                            m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
+                    }
                 }
 
                 @Override
@@ -117,10 +119,12 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                     if (s.length() > 3)
                         editText.setText("999");
 
-                    if (m_dataDogs.getExpectedWeight() != Integer.valueOf(editText.getText().toString()))
-                        m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.warningOrange));
-                    else
-                        m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
+                    if (isAdded()) {
+                        if (m_dataDogs.getExpectedWeight() != Integer.valueOf(editText.getText().toString()))
+                            m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.warningOrange));
+                        else
+                            m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
+                    }
                 }
 
                 @Override
@@ -237,7 +241,6 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
 
                     m_dataDogs.setDogName(newName);
                     m_inputDogName.getEditText().setText(newName);
-                    m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
                 }
 
                 break;
@@ -248,7 +251,6 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
 
                     m_dataDogs.setExpectedWeight(newVal);
                     m_inputWeightRegulation.getEditText().setText(String.valueOf(newVal));
-                    m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
                 }
 
                 break;
