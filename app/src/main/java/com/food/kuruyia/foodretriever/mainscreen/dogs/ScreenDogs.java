@@ -1,8 +1,10 @@
 package com.food.kuruyia.foodretriever.mainscreen.dogs;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.food.kuruyia.foodretriever.mainscreen.MainActivity;
@@ -23,14 +26,18 @@ import com.google.gson.JsonObject;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
+import java.text.NumberFormat;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
-    DataDogs m_dataDogs;
+    private DataDogs m_dataDogs;
     
-    TextInputLayout m_inputDogName;
+    private TextInputLayout m_inputDogName;
+    private TextInputLayout m_inputWeightRegulation;
 
     final static String TAG = "ScreenDogs";
 
@@ -58,7 +65,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
 
         TextView textDogWeight = view.findViewById(R.id.textDogWeight);
         CheckBox checkBoxWeightRegulation = view.findViewById(R.id.checkBoxWeightRegulation);
-        final TextInputLayout inputWeightRegulation = view.findViewById(R.id.inputWeightRegulation);
+        m_inputWeightRegulation = view.findViewById(R.id.inputWeightRegulation);
 
         if (m_inputDogName.getEditText() != null) {
             m_inputDogName.getEditText().setText(m_dataDogs.getDogName());
@@ -90,33 +97,39 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
         checkBoxWeightRegulation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                inputWeightRegulation.setEnabled(isChecked);
+                m_inputWeightRegulation.setEnabled(isChecked);
                 m_dataDogs.setWeightRegulated(isChecked);
             }
         });
 
-        inputWeightRegulation.setEnabled(checkBoxWeightRegulation.isChecked());
-        inputWeightRegulation.getEditText().setText(m_dataDogs.getExpectedWeight() > 0 ? String.valueOf(m_dataDogs.getExpectedWeight()) : "");
-        inputWeightRegulation.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        m_inputWeightRegulation.setEnabled(checkBoxWeightRegulation.isChecked());
+        if (m_inputWeightRegulation.getEditText() != null) {
+            m_inputWeightRegulation.getEditText().setText(m_dataDogs.getExpectedWeight() > 0 ? String.valueOf(m_dataDogs.getExpectedWeight()) : "");
+            m_inputWeightRegulation.getEditText().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 3)
-                    inputWeightRegulation.getEditText().setText("999");
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    EditText editText = m_inputWeightRegulation.getEditText();
+                    if (s.length() > 3)
+                        editText.setText("999");
 
-                String weight = inputWeightRegulation.getEditText().getText().toString();
-                m_dataDogs.setExpectedWeight(weight.length() > 0 ? Integer.valueOf(weight) : 0);
-            }
+                    if (m_dataDogs.getExpectedWeight() != Integer.valueOf(editText.getText().toString()))
+                        m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.warningOrange));
+                    else
+                        m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-            }
-        });
+                }
+            });
+            setupTextInput(DataType.DATA_DOG_REGULATION_VALUE, m_inputWeightRegulation);
+        }
 
         return view;
     }
@@ -137,7 +150,21 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
-                        processTextInput(dataType, inputLayout.getEditText().getText().toString());
+                        String text = inputLayout.getEditText().getText().toString();
+                        String actualValue = getValueFromDataType(dataType);
+
+                        if (actualValue != null) {
+                            try {
+                                int textNum = Integer.parseInt(text);
+                                int actualValueNum = Integer.parseInt(actualValue);
+
+                                if (textNum != actualValueNum)
+                                    processTextInput(dataType, textNum);
+                            } catch (NumberFormatException e) {
+                                if (!actualValue.equals(text))
+                                    processTextInput(dataType, text);
+                            }
+                        }
                     }
                 }
             });
@@ -149,9 +176,23 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                                     event.getAction() == KeyEvent.ACTION_DOWN &&
                                     event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                         if (event == null || !event.isShiftPressed()) {
-                            processTextInput(dataType, inputLayout.getEditText().getText().toString());
+                            String text = inputLayout.getEditText().getText().toString();
+                            String actualValue = getValueFromDataType(dataType);
 
-                            return true;
+                            if (actualValue != null) {
+                                try {
+                                    int textNum = Integer.parseInt(text);
+                                    int actualValueNum = Integer.parseInt(actualValue);
+
+                                    if (textNum != actualValueNum)
+                                        processTextInput(dataType, textNum);
+                                } catch (NumberFormatException e) {
+                                    if (!actualValue.equals(text))
+                                        processTextInput(dataType, text);
+                                }
+
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -167,15 +208,47 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
         onChangeData(dataType, data);
     }
 
+    private void processTextInput(DataType dataType, int value) {
+        JsonObject data = new JsonObject();
+        data.addProperty("value", value);
+
+        onChangeData(dataType, data);
+    }
+
+    private String getValueFromDataType(DataType dataType) {
+        switch (dataType) {
+            case DATA_DOG_NAME:
+                return m_dataDogs.getDogName();
+            case DATA_DOG_WEIGHT:
+                return String.valueOf(m_dataDogs.getActualWeight());
+            case DATA_DOG_REGULATION_VALUE:
+                return String.valueOf(m_dataDogs.getExpectedWeight());
+            default:
+                return null;
+        }
+    }
+
     @Override
     public void onDataChanged(DataType dataType, JsonObject data) {
         switch (dataType) {
             case DATA_DOG_NAME: {
-                if (data.has("value")) {
+                if (data.has("value") && m_inputDogName.getEditText() != null) {
                     String newName = data.get("value").getAsString();
 
                     m_dataDogs.setDogName(newName);
+                    m_inputDogName.getEditText().setText(newName);
                     m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
+                }
+
+                break;
+            }
+            case DATA_DOG_REGULATION_VALUE: {
+                if (data.has("value") && m_inputWeightRegulation.getEditText() != null) {
+                    int newVal = data.get("value").getAsInt();
+
+                    m_dataDogs.setExpectedWeight(newVal);
+                    m_inputWeightRegulation.getEditText().setText(String.valueOf(newVal));
+                    m_inputWeightRegulation.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));
                 }
 
                 break;
