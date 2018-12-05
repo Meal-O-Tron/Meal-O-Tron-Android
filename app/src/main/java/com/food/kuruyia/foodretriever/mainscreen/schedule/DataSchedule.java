@@ -2,6 +2,7 @@ package com.food.kuruyia.foodretriever.mainscreen.schedule;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.utils.IDataChange;
@@ -13,6 +14,8 @@ import java.util.Collections;
 public class DataSchedule implements Parcelable, IDataChange {
     private ArrayList<ScheduleItem> m_scheduledItems = new ArrayList<>();
     private ArrayList<IDataChange> m_dataChangedListeners = new ArrayList<>();
+
+    final static String TAG = "DataSchedule";
 
     public DataSchedule() { }
 

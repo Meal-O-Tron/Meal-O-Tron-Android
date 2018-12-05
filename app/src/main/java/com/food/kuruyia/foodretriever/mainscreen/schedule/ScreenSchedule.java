@@ -3,6 +3,7 @@ package com.food.kuruyia.foodretriever.mainscreen.schedule;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,6 +153,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                     boolean enabled = data.get("enabled").getAsBoolean();
 
                     int pos = m_dataSchedule.addItem(new ScheduleItem(hour, minute, ratio, id, enabled));
+                    Log.d(TAG, String.valueOf(pos));
 
                     if (pos >= 0)
                         m_adapter.notifyItemInserted(pos);

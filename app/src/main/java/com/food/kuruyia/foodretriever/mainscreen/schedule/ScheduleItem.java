@@ -103,6 +103,13 @@ public class ScheduleItem implements Parcelable, Comparable<ScheduleItem> {
 
     @Override
     public int compareTo(@NonNull ScheduleItem o) {
-        return getCalendar().compareTo(o.getCalendar());
+        if (o.getHour() == m_hour && o.getMinutes() == m_minutes)
+            return 0;
+        else if (o.getHour() == m_hour)
+            if (o.getMinutes() > m_minutes) return -1; else return 1;
+        else if (o.getHour() > m_hour)
+            return -1;
+        else
+            return 1;
     }
 }
