@@ -142,7 +142,6 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
 
     @Override
     public void onDataChanged(DataType dataType, JsonObject data) {
-        // TODO: Handle schedule messages
         switch (dataType) {
             case DATA_SCHEDULE_ADD: {
                 if (data.has("hour") && data.has("minute") && data.has("ratio") && data.has("id") && data.has("enabled")) {
@@ -169,6 +168,8 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                     if (pos >= 0) {
                         m_dataSchedule.removeItem(pos);
                         m_adapter.notifyItemRemoved(pos);
+
+                        setOverallRatioData(m_dataSchedule.getUsedRatio());
                     }
                 }
 
@@ -188,6 +189,8 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                             m_dataSchedule.getItem(pos).setEnabled(value);
                             m_adapter.notifyItemChanged(pos);
                         }
+
+                        setOverallRatioData(m_dataSchedule.getUsedRatio());
                     }
                 }
 
@@ -210,6 +213,28 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
 
                 break;
             }
+            case DATA_SCHEDULE_DATE: {
+                if (data.has("id") && data.has("value")) {
+                    int id = data.get("id").getAsInt();
+                    JsonObject value = data.get("value").getAsJsonObject();
+
+                    final int pos = m_dataSchedule.findItemById(id);
+
+                    if (pos >= 0 && value.has("hour") && value.has("minute")) {
+                        int hour = value.get("hour").getAsInt();
+                        int minute = value.get("minute").getAsInt();
+
+                        ScheduleItem currentItem = m_dataSchedule.getItem(pos);
+                        currentItem.setHour(hour);
+                        currentItem.setMinutes(minute);
+                        m_adapter.notifyItemChanged(pos);
+                    }
+
+                    setOverallRatioData(m_dataSchedule.getUsedRatio());
+                }
+
+                break;
+            }
         }
     }
 
@@ -218,17 +243,17 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
         sendRequest(RequestFormatter.format(dataType, data));
     }
 
-    private void setOverallRatioData(int ratio) {
-        if (getActivity() != null)
-            m_textOverallRatio.setText(String.format(getActivity().getResources().getString(R.string.schedule_item_ratio), ratio));
-
-        m_progressOverallRatio.setProgress(ratio);
-    }
-
     private void sendRequest(String req) {
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity)getActivity();
             activity.getServiceCommunicator().sendMessage(req);
         }
+    }
+
+    private void setOverallRatioData(int ratio) {
+        if (getActivity() != null)
+            m_textOverallRatio.setText(String.format(getActivity().getResources().getString(R.string.schedule_item_ratio), ratio));
+
+        m_progressOverallRatio.setProgress(ratio);
     }
 }

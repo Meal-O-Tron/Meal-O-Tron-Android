@@ -12,4 +12,5 @@
 
     <color name="darkGray">#616161</color>
     <color name="deleteRed">#d50000</color>
+    <color name="warningOrange">#ff9800</color>
 </resources>
