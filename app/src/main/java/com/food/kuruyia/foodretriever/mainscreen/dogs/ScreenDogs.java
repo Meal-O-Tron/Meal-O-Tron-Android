@@ -38,6 +38,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
     
     private TextInputLayout m_inputDogName;
     private TextInputLayout m_inputWeightRegulation;
+    private CheckBox m_checkWeightRegulation;
 
     final static String TAG = "ScreenDogs";
 
@@ -64,7 +65,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
         m_inputDogName = view.findViewById(R.id.inputDogName);
 
         TextView textDogWeight = view.findViewById(R.id.textDogWeight);
-        CheckBox checkBoxWeightRegulation = view.findViewById(R.id.checkBoxWeightRegulation);
+        m_checkWeightRegulation = view.findViewById(R.id.checkBoxWeightRegulation);
         m_inputWeightRegulation = view.findViewById(R.id.inputWeightRegulation);
 
         if (m_inputDogName.getEditText() != null) {
@@ -95,16 +96,20 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
 
         textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), m_dataDogs.getActualWeight()));
 
-        checkBoxWeightRegulation.setChecked(m_dataDogs.isWeightRegulated());
-        checkBoxWeightRegulation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        m_checkWeightRegulation.setChecked(m_dataDogs.isWeightRegulated());
+        m_checkWeightRegulation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                m_inputWeightRegulation.setEnabled(isChecked);
-                m_dataDogs.setWeightRegulated(isChecked);
+                if (isChecked != m_dataDogs.isWeightRegulated()) {
+                    JsonObject data = new JsonObject();
+                    data.addProperty("value", isChecked);
+
+                    onChangeData(DataType.DATA_DOG_REGULATION_ENABLE, data);
+                }
             }
         });
 
-        m_inputWeightRegulation.setEnabled(checkBoxWeightRegulation.isChecked());
+        m_inputWeightRegulation.setEnabled(m_checkWeightRegulation.isChecked());
         if (m_inputWeightRegulation.getEditText() != null) {
             m_inputWeightRegulation.getEditText().setText(m_dataDogs.getExpectedWeight() > 0 ? String.valueOf(m_dataDogs.getExpectedWeight()) : "");
             m_inputWeightRegulation.getEditText().addTextChangedListener(new TextWatcher() {
@@ -253,6 +258,17 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                     m_inputWeightRegulation.getEditText().setText(String.valueOf(newVal));
                 }
 
+                break;
+            }
+            case DATA_DOG_REGULATION_ENABLE: {
+                if (data.has("value")) {
+                    boolean val = data.get("value").getAsBoolean();
+                    
+                    m_checkWeightRegulation.setChecked(val);
+                    m_inputWeightRegulation.setEnabled(val);
+                    m_dataDogs.setWeightRegulated(val);
+                }
+                
                 break;
             }
         }
