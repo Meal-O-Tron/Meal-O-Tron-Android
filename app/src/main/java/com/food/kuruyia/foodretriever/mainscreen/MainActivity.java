@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     String m_serverAddress = "ws://192.168.43.117:8000/";
     WebSocketServiceCommunicator m_serviceCommunicator = new WebSocketServiceCommunicator(this);
 
-    int m_selectedScreen = 3;
+    int m_selectedScreen = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,7 +223,9 @@ public class MainActivity extends AppCompatActivity
         if (parser.isReady()) {
             final int responseType = parser.getType().ordinal();
 
-            if (responseType > DataType.DATA_SCHEDULE_START.ordinal() && responseType < DataType.DATA_SCHEDULE_END.ordinal()) {
+            if (responseType > DataType.DATA_STATS_START.ordinal() && responseType < DataType.DATA_STATS_END.ordinal()) {
+                m_screenStats.onDataChanged(parser.getType(), parser.getData());
+            } else if (responseType > DataType.DATA_SCHEDULE_START.ordinal() && responseType < DataType.DATA_SCHEDULE_END.ordinal()) {
                 m_screenSchedule.onDataChanged(parser.getType(), parser.getData());
             } else if (responseType > DataType.DATA_DOG_START.ordinal() && responseType < DataType.DATA_DOG_END.ordinal()) {
                 m_screenDogs.onDataChanged(parser.getType(), parser.getData());
