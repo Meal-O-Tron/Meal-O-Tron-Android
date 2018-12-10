@@ -1,6 +1,12 @@
 package com.food.kuruyia.foodretriever.utils;
 
 public enum DataType {
+    DATA_STATS_START,
+    DATA_STATS_WEIGHT,
+    DATA_STATS_REMAINING_FOOD,
+    DATA_STATS_DOG_ARRIVAL,
+    DATA_STATS_END,
+
     DATA_SCHEDULE_START,
     DATA_SCHEDULE_ADD,
     DATA_SCHEDULE_REMOVE,
