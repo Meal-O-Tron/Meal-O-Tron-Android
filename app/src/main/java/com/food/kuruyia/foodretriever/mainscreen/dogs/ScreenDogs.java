@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
     private TextInputLayout m_inputDogName;
     private TextInputLayout m_inputWeightRegulation;
     private CheckBox m_checkWeightRegulation;
+    private TextView m_textDogWeight;
 
     final static String TAG = "ScreenDogs";
 
@@ -63,10 +65,10 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
         }
 
         m_inputDogName = view.findViewById(R.id.inputDogName);
-
-        TextView textDogWeight = view.findViewById(R.id.textDogWeight);
+        m_textDogWeight = view.findViewById(R.id.textDogWeight);
         m_checkWeightRegulation = view.findViewById(R.id.checkBoxWeightRegulation);
         m_inputWeightRegulation = view.findViewById(R.id.inputWeightRegulation);
+        Button buttonWeigh = view.findViewById(R.id.buttonWeigh);
 
         if (m_inputDogName.getEditText() != null) {
             m_inputDogName.getEditText().setText(m_dataDogs.getDogName());
@@ -94,7 +96,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
             setupTextInput(DataType.DATA_DOG_NAME, m_inputDogName);
         }
 
-        textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), m_dataDogs.getActualWeight()));
+        m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), m_dataDogs.getActualWeight()));
 
         m_checkWeightRegulation.setChecked(m_dataDogs.isWeightRegulated());
         m_checkWeightRegulation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -139,6 +141,13 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
             });
             setupTextInput(DataType.DATA_DOG_REGULATION_VALUE, m_inputWeightRegulation);
         }
+
+        buttonWeigh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onChangeData(DataType.DATA_DOG_WEIGHT, new JsonObject());
+            }
+        });
 
         return view;
     }
@@ -269,6 +278,16 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                     m_dataDogs.setWeightRegulated(val);
                 }
                 
+                break;
+            }
+            case DATA_DOG_WEIGHT: {
+                if (data.has("value")) {
+                    int val = data.get("value").getAsInt();
+
+                    m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), val));
+                    m_dataDogs.setActualWeight(val);
+                }
+
                 break;
             }
         }
