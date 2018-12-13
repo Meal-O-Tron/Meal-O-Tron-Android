@@ -11,6 +11,8 @@
 
     <!--Stats screen-->
     <string name="stats_header_dog_weight">Dog weight</string>
+    <string name="stats_header_food_availability">Food availability</string>
+    <string name="stats_header_dog_arrival">Dog arrival</string>
 
     <!--Schedule screen-->
     <string name="schedule_header_ratio_used">ratio used</string>

@@ -13,4 +13,10 @@
     <color name="darkGray">#616161</color>
     <color name="deleteRed">#d50000</color>
     <color name="warningOrange">#ff9800</color>
+
+    <color name="graphBlueDots">#004ecb</color>
+    <color name="graphBlueBackground">#802979ff</color>
+    <color name="graphOrangeDots">#c79400</color>
+    <color name="graphOrangeBackground">#80ffc400</color>
+    <color name="graphGreenBackground">#b04caf50</color>
 </resources>
