@@ -117,4 +117,9 @@ public class DataSchedule implements Parcelable, IDataChange {
         for (int i = 0; i < m_dataChangedListeners.size(); i++)
             m_dataChangedListeners.get(i).onChangeData(dataType, data);
     }
+
+    @Override
+    public void reloadData(JsonObject data) {
+
+    }
 }

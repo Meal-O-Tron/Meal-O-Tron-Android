@@ -9,8 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/mtrl_card_spacing"
@@ -36,11 +35,11 @@
                     android:textColor="@android:color/black"
                     android:textSize="24sp" />
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/graphDogWeight"
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
-                    android:layout_margin="8dp"/>
+                    android:layout_margin="8dp" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -71,7 +70,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="24sp" />
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/graphFoodAvail"
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
@@ -92,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="64dp"
+                android:paddingBottom="70dp"
                 android:clipToPadding="false">
 
                 <TextView

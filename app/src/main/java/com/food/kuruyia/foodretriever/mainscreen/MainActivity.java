@@ -7,6 +7,8 @@ import com.food.kuruyia.foodretriever.mainscreen.dogs.DataDogs;
 import com.food.kuruyia.foodretriever.mainscreen.dogs.ScreenDogs;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.DataSchedule;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.ScreenSchedule;
+import com.food.kuruyia.foodretriever.mainscreen.stats.DataStats;
+import com.food.kuruyia.foodretriever.mainscreen.stats.ScreenStats;
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.utils.IFabInteract;
 import com.food.kuruyia.foodretriever.websocket.ResponseParser;
@@ -14,6 +16,7 @@ import com.food.kuruyia.foodretriever.websocket.WebSocketServiceCommunicator;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonObject;
 
 import android.os.Handler;
 import android.util.Log;
@@ -35,7 +38,8 @@ public class MainActivity extends AppCompatActivity
 
     ScreenHome m_screenHome = new ScreenHome();
 
-    ScreenStats m_screenStats = new ScreenStats();
+    ScreenStats m_screenStats;
+    DataStats m_dataStats = new DataStats();
 
     ScreenSchedule m_screenSchedule;
     DataSchedule m_dataSchedule = new DataSchedule();
@@ -54,10 +58,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
+            m_dataStats = savedInstanceState.getParcelable("Save.DataStats");
             m_dataSchedule = savedInstanceState.getParcelable("Save.DataSchedule");
             m_dataDogs = savedInstanceState.getParcelable("Save.DataDogs");
         }
 
+        m_screenStats = ScreenStats.newInstance(m_dataStats);
         m_screenSchedule = ScreenSchedule.newInstance(m_dataSchedule);
         m_screenDogs = ScreenDogs.newInstance(m_dataDogs);
 
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        outState.putParcelable("Save.DataStats", m_dataStats);
         outState.putParcelable("Save.DataSchedule", m_dataSchedule);
         outState.putParcelable("Save.DataDogs", m_dataDogs);
     }
@@ -229,6 +236,10 @@ public class MainActivity extends AppCompatActivity
                 m_screenSchedule.onDataChanged(parser.getType(), parser.getData());
             } else if (responseType > DataType.DATA_DOG_START.ordinal() && responseType < DataType.DATA_DOG_END.ordinal()) {
                 m_screenDogs.onDataChanged(parser.getType(), parser.getData());
+            } else if (parser.getType() == DataType.DATA_GLOBAL_RELOAD) {
+                JsonObject statsObject = parser.getData().getAsJsonObject("stats");
+
+                m_screenStats.reloadData(statsObject);
             }
         }
     }

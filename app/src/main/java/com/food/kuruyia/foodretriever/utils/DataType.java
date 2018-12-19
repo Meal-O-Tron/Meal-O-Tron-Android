@@ -1,6 +1,8 @@
 package com.food.kuruyia.foodretriever.utils;
 
 public enum DataType {
+    DATA_GLOBAL_RELOAD,
+    
     DATA_STATS_START,
     DATA_STATS_WEIGHT,
     DATA_STATS_REMAINING_FOOD,

@@ -298,6 +298,11 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
         sendRequest(RequestFormatter.format(dataType, data));
     }
 
+    @Override
+    public void reloadData(JsonObject data) {
+
+    }
+
     private void sendRequest(String req) {
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity)getActivity();
