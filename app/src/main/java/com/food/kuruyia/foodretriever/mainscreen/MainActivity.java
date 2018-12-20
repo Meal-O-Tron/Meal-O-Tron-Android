@@ -9,10 +9,12 @@ import com.food.kuruyia.foodretriever.mainscreen.schedule.DataSchedule;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.ScreenSchedule;
 import com.food.kuruyia.foodretriever.mainscreen.stats.DataStats;
 import com.food.kuruyia.foodretriever.mainscreen.stats.ScreenStats;
+import com.food.kuruyia.foodretriever.mainscreen.stats.WeightFormatter;
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.utils.IFabInteract;
 import com.food.kuruyia.foodretriever.websocket.ResponseParser;
 import com.food.kuruyia.foodretriever.websocket.WebSocketServiceCommunicator;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     String m_serverAddress = "ws://192.168.43.117:8000/";
     WebSocketServiceCommunicator m_serviceCommunicator = new WebSocketServiceCommunicator(this);
 
-    int m_selectedScreen = 1;
+    int m_selectedScreen = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,8 +240,14 @@ public class MainActivity extends AppCompatActivity
                 m_screenDogs.onDataChanged(parser.getType(), parser.getData());
             } else if (parser.getType() == DataType.DATA_GLOBAL_RELOAD) {
                 JsonObject statsObject = parser.getData().getAsJsonObject("stats");
+                if (statsObject.has("weight") && statsObject.has("food") && statsObject.has("arrival")) {
+                    m_dataStats.setDogWeightValues(statsObject.getAsJsonArray("weight"));
+                    m_dataStats.setFoodAvailabilityValues(statsObject.getAsJsonArray("food"));
+                    m_dataStats.setDogArrivalValues(statsObject.getAsJsonArray("arrival"));
+                }
 
-                m_screenStats.reloadData(statsObject);
+                if (m_screenStats.getView() != null)
+                    m_screenStats.loadGraphs();
             }
         }
     }
