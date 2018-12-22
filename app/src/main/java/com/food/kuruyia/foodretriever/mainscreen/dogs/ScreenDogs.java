@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import androidx.annotation.NonNull;
@@ -96,7 +97,8 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
             setupTextInput(DataType.DATA_DOG_NAME, m_inputDogName);
         }
 
-        m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), m_dataDogs.getActualWeight()));
+        String formattedWeight = new DecimalFormat("#.#").format(m_dataDogs.getActualWeight());
+        m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), formattedWeight));
 
         m_checkWeightRegulation.setChecked(m_dataDogs.isWeightRegulated());
         m_checkWeightRegulation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -273,8 +275,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                 if (data.has("value")) {
                     boolean val = data.get("value").getAsBoolean();
                     
-                    m_checkWeightRegulation.setChecked(val);
-                    m_inputWeightRegulation.setEnabled(val);
+                    setWeightRegulation(val);
                     m_dataDogs.setWeightRegulated(val);
                 }
                 
@@ -284,7 +285,8 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                 if (data.has("value")) {
                     int val = data.get("value").getAsInt();
 
-                    m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), val));
+                    String formattedWeight = new DecimalFormat("#.#").format(m_dataDogs.getActualWeight());
+                    m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), formattedWeight));
                     m_dataDogs.setActualWeight(val);
                 }
 
@@ -298,15 +300,28 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
         sendRequest(RequestFormatter.format(dataType, data));
     }
 
-    @Override
-    public void reloadData(JsonObject data) {
-
-    }
-
     private void sendRequest(String req) {
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity)getActivity();
             activity.getServiceCommunicator().sendMessage(req);
         }
+    }
+
+    public void loadData() {
+        if (m_inputDogName.getEditText() != null)
+            m_inputDogName.getEditText().setText(m_dataDogs.getDogName());
+
+        if (m_inputWeightRegulation.getEditText() != null)
+            m_inputWeightRegulation.getEditText().setText(String.valueOf(m_dataDogs.getExpectedWeight()));
+
+        String formattedWeight = new DecimalFormat("#.#").format(m_dataDogs.getActualWeight());
+        m_textDogWeight.setText(String.format(getResources().getString(R.string.dog_weight), formattedWeight));
+
+        setWeightRegulation(m_dataDogs.isWeightRegulated());
+    }
+
+    private void setWeightRegulation(boolean enabled) {
+        m_checkWeightRegulation.setChecked(enabled);
+        m_inputWeightRegulation.setEnabled(enabled);
     }
 }

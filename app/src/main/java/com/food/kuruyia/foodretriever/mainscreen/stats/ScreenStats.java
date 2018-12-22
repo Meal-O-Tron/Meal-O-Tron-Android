@@ -75,11 +75,7 @@ public class ScreenStats extends Fragment implements IFabInteract, IDataChange {
         Bundle args = getArguments();
         if (args != null) {
             m_dataStats = args.getParcelable("statsData");
-            Log.d(TAG, "Data available");
-
             loadGraphs();
-        } else {
-            Log.d(TAG, "Data not available");
         }
 
         return view;
@@ -182,11 +178,6 @@ public class ScreenStats extends Fragment implements IFabInteract, IDataChange {
 
     @Override
     public void onChangeData(DataType dataType, JsonObject data) {
-
-    }
-
-    @Override
-    public void reloadData(JsonObject data) {
 
     }
 }

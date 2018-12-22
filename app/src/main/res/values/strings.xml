@@ -27,7 +27,7 @@
     <!--Dog screen-->
     <string name="dog_name">Dog name</string>
     <string name="dog_weight_text">Dog weight</string>
-    <string name="dog_weight" translatable="false">%1$dkg</string>
+    <string name="dog_weight" translatable="false">%1$skg</string>
     <string name="dog_weigh">Weigh</string>
 
     <string name="dog_enable_weight">Enable weight regulation</string>

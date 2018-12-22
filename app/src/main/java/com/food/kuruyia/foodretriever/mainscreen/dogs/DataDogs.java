@@ -6,16 +6,11 @@ import android.os.Parcelable;
 public class DataDogs implements Parcelable {
     String m_dogName;
 
-    int m_actualWeight;
+    float m_actualWeight;
     boolean m_weightRegulated;
     int m_expectedWeight;
 
-    public DataDogs(String dogName, int actualWeight, boolean weightRegulated, int expectedWeight) {
-        m_dogName = dogName;
-
-        m_actualWeight = actualWeight;
-        m_weightRegulated = weightRegulated;
-        m_expectedWeight = expectedWeight;
+    public DataDogs() {
     }
 
     public String getDogName() {
@@ -26,11 +21,11 @@ public class DataDogs implements Parcelable {
         m_dogName = dogName;
     }
 
-    public int getActualWeight() {
+    public float getActualWeight() {
         return m_actualWeight;
     }
 
-    public void setActualWeight(int actualWeight) {
+    public void setActualWeight(float actualWeight) {
         m_actualWeight = actualWeight;
     }
 
@@ -53,7 +48,7 @@ public class DataDogs implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(m_dogName);
 
-        out.writeInt(m_actualWeight);
+        out.writeFloat(m_actualWeight);
         out.writeByte((byte) (m_weightRegulated ? 1 : 0));
         out.writeInt(m_expectedWeight);
     }
@@ -77,7 +72,7 @@ public class DataDogs implements Parcelable {
     private DataDogs(Parcel in) {
         m_dogName = in.readString();
 
-        m_actualWeight = in.readInt();
+        m_actualWeight = in.readFloat();
         m_weightRegulated = in.readByte() != 0;
         m_expectedWeight = in.readInt();
     }

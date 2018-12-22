@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -117,7 +116,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
 
         m_textOverallRatio = view.findViewById(R.id.textOverallRatio);
         m_progressOverallRatio = view.findViewById(R.id.progressOverallRatio);
-        setOverallRatioData(m_dataSchedule.getUsedRatio());
+        updateOverallRatioUsage();
 
         return view;
     }
@@ -171,7 +170,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                         m_dataSchedule.removeItem(pos);
                         m_adapter.notifyItemRemoved(pos);
 
-                        setOverallRatioData(m_dataSchedule.getUsedRatio());
+                        updateOverallRatioUsage();
                     }
                 }
 
@@ -192,7 +191,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                             m_adapter.notifyItemChanged(pos);
                         }
 
-                        setOverallRatioData(m_dataSchedule.getUsedRatio());
+                        updateOverallRatioUsage();
                     }
                 }
 
@@ -210,7 +209,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                         m_adapter.notifyItemChanged(pos);
                     }
 
-                    setOverallRatioData(m_dataSchedule.getUsedRatio());
+                    updateOverallRatioUsage();
                 }
 
                 break;
@@ -232,7 +231,7 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
                         m_adapter.notifyItemChanged(pos);
                     }
 
-                    setOverallRatioData(m_dataSchedule.getUsedRatio());
+                    updateOverallRatioUsage();
                 }
 
                 break;
@@ -245,11 +244,6 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
         sendRequest(RequestFormatter.format(dataType, data));
     }
 
-    @Override
-    public void reloadData(JsonObject data) {
-
-    }
-
     private void sendRequest(String req) {
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity)getActivity();
@@ -257,10 +251,19 @@ public class ScreenSchedule extends Fragment implements IFabInteract, IDataChang
         }
     }
 
-    private void setOverallRatioData(int ratio) {
+    private void updateOverallRatioUsage() {
+        int ratio = m_dataSchedule.getUsedRatio(true);
+        int totalRatio = m_dataSchedule.getUsedRatio(false);
+
         if (getActivity() != null)
             m_textOverallRatio.setText(String.format(getActivity().getResources().getString(R.string.schedule_item_ratio), ratio));
 
         m_progressOverallRatio.setProgress(ratio);
+        m_progressOverallRatio.setSecondaryProgress(totalRatio);
+    }
+
+    public void loadSchedule() {
+        m_adapter.notifyDataSetChanged();
+        updateOverallRatioUsage();
     }
 }

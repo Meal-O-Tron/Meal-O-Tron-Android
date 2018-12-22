@@ -6,6 +6,7 @@ import com.food.kuruyia.foodretriever.R;
 import com.food.kuruyia.foodretriever.mainscreen.dogs.DataDogs;
 import com.food.kuruyia.foodretriever.mainscreen.dogs.ScreenDogs;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.DataSchedule;
+import com.food.kuruyia.foodretriever.mainscreen.schedule.ScheduleItem;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.ScreenSchedule;
 import com.food.kuruyia.foodretriever.mainscreen.stats.DataStats;
 import com.food.kuruyia.foodretriever.mainscreen.stats.ScreenStats;
@@ -18,6 +19,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import android.os.Handler;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     DataSchedule m_dataSchedule = new DataSchedule();
 
     ScreenDogs m_screenDogs;
-    DataDogs m_dataDogs = new DataDogs("Pepito", 42, true, 69);
+    DataDogs m_dataDogs = new DataDogs();
 
     String m_serverAddress = "ws://192.168.43.117:8000/";
     WebSocketServiceCommunicator m_serviceCommunicator = new WebSocketServiceCommunicator(this);
@@ -239,15 +241,49 @@ public class MainActivity extends AppCompatActivity
             } else if (responseType > DataType.DATA_DOG_START.ordinal() && responseType < DataType.DATA_DOG_END.ordinal()) {
                 m_screenDogs.onDataChanged(parser.getType(), parser.getData());
             } else if (parser.getType() == DataType.DATA_GLOBAL_RELOAD) {
-                JsonObject statsObject = parser.getData().getAsJsonObject("stats");
-                if (statsObject.has("weight") && statsObject.has("food") && statsObject.has("arrival")) {
-                    m_dataStats.setDogWeightValues(statsObject.getAsJsonArray("weight"));
-                    m_dataStats.setFoodAvailabilityValues(statsObject.getAsJsonArray("food"));
-                    m_dataStats.setDogArrivalValues(statsObject.getAsJsonArray("arrival"));
+                JsonObject data = parser.getData();
+                if (data.has("stats")) {
+                    JsonObject statsObject = data.getAsJsonObject("stats");
+                    if (statsObject.has("weight") && statsObject.has("food") && statsObject.has("arrival")) {
+                        m_dataStats.setDogWeightValues(statsObject.getAsJsonArray("weight"));
+                        m_dataStats.setFoodAvailabilityValues(statsObject.getAsJsonArray("food"));
+                        m_dataStats.setDogArrivalValues(statsObject.getAsJsonArray("arrival"));
+                    }
+
+                    if (m_screenStats.getView() != null)
+                        m_screenStats.loadGraphs();
                 }
 
-                if (m_screenStats.getView() != null)
-                    m_screenStats.loadGraphs();
+                if (data.has("schedule")) {
+                    JsonArray scheduleArray = data.getAsJsonArray("schedule");
+                    for (int i = 0; i < scheduleArray.size(); i++) {
+                        JsonObject actualSchedule = scheduleArray.get(i).getAsJsonObject();
+                        if (actualSchedule.has("hour") && actualSchedule.has("minute") && actualSchedule.has("enabled") && actualSchedule.has("ratio")) {
+                            m_dataSchedule.addItem(new ScheduleItem(actualSchedule.get("hour").getAsInt(),
+                                    actualSchedule.get("minute").getAsInt(),
+                                    actualSchedule.get("ratio").getAsInt(),
+                                    i,
+                                    actualSchedule.get("enabled").getAsBoolean()
+                            ));
+                        }
+                    }
+
+                    if (m_screenSchedule.getView() != null)
+                        m_screenSchedule.loadSchedule();
+                }
+
+                if (data.has("dog")) {
+                    JsonObject dogObject = data.getAsJsonObject("dog");
+                    if (dogObject.has("name") && dogObject.has("weight") && dogObject.has("weight_reg") && dogObject.has("weight_reg_value")) {
+                        m_dataDogs.setDogName(dogObject.get("name").getAsString());
+                        m_dataDogs.setActualWeight(dogObject.get("weight").getAsFloat());
+                        m_dataDogs.setWeightRegulated(dogObject.get("weight_reg").getAsBoolean());
+                        m_dataDogs.setExpectedWeight(dogObject.get("weight_reg_value").getAsInt());
+                    }
+
+                    if (m_screenDogs.getView() != null)
+                        m_screenDogs.loadData();
+                }
             }
         }
     }

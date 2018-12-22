@@ -23,7 +23,7 @@ public class DataSchedule implements Parcelable, IDataChange {
         return m_scheduledItems;
     }
 
-    int addItem(ScheduleItem item) {
+    public int addItem(ScheduleItem item) {
         for (int i = 0; i < m_scheduledItems.size(); i++)
             if (item.compareTo(m_scheduledItems.get(i)) == 0)
                 return -1;
@@ -56,12 +56,12 @@ public class DataSchedule implements Parcelable, IDataChange {
         return -1;
     }
 
-    int getUsedRatio() {
+    int getUsedRatio(boolean filterEnabled) {
         int ratio = 0;
 
         for (int i = 0; i < m_scheduledItems.size(); i++) {
             ScheduleItem actualItem = m_scheduledItems.get(i);
-            if (actualItem.isEnabled())
+            if ((actualItem.isEnabled() && filterEnabled) || !filterEnabled)
                 ratio += actualItem.getRatio();
         }
 
@@ -116,10 +116,5 @@ public class DataSchedule implements Parcelable, IDataChange {
     public void onChangeData(DataType dataType, JsonObject data) {
         for (int i = 0; i < m_dataChangedListeners.size(); i++)
             m_dataChangedListeners.get(i).onChangeData(dataType, data);
-    }
-
-    @Override
-    public void reloadData(JsonObject data) {
-
     }
 }

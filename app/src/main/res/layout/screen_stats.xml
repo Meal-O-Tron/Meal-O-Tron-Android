@@ -39,7 +39,9 @@
                     android:id="@+id/graphDogWeight"
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
-                    android:layout_margin="8dp" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"/>
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -74,7 +76,9 @@
                     android:id="@+id/graphFoodAvail"
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
-                    android:layout_margin="8dp" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -91,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="70dp"
+                android:paddingBottom="76dp"
                 android:clipToPadding="false">
 
                 <TextView
@@ -111,7 +115,9 @@
                     android:id="@+id/graphDogArrival"
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
-                    android:layout_margin="8dp" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"/>
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

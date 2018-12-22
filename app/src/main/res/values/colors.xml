@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#fafafa</color>
     <color name="colorPrimaryDark">#c7c7c7</color>
+    <color name="colorPrimaryDarkest">#969696</color>
     <color name="colorPrimaryLight">#ffffff</color>
 
     <color name="colorSecondary">#00796b</color>
@@ -14,9 +15,7 @@
     <color name="deleteRed">#d50000</color>
     <color name="warningOrange">#ff9800</color>
 
-    <color name="graphBlueDots">#004ecb</color>
     <color name="graphBlueBackground">#802979ff</color>
-    <color name="graphOrangeDots">#c79400</color>
     <color name="graphOrangeBackground">#80ffc400</color>
     <color name="graphGreenBackground">#b04caf50</color>
 </resources>
