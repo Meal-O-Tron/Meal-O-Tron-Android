@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     ScreenDogs m_screenDogs;
     DataDogs m_dataDogs = new DataDogs();
 
-    String m_serverAddress = "ws://192.168.43.117:8000/";
+    String m_serverAddress = "ws://192.168.43.88:8000/";
     WebSocketServiceCommunicator m_serviceCommunicator = new WebSocketServiceCommunicator(this);
 
     int m_selectedScreen = 0;

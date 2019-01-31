@@ -32,4 +32,8 @@
 
     <string name="dog_enable_weight">Enable weight regulation</string>
     <string name="dog_expected_weight">Expected weight (kg)</string>
+
+    <!--Connect activity-->
+    <string name="conact_address">IP Address</string>
+    <string name="conact_connect">Connect</string>
 </resources>
