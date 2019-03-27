@@ -15,8 +15,12 @@ import android.widget.Button;
 import com.food.kuruyia.foodretriever.R;
 import com.food.kuruyia.foodretriever.mainscreen.MainActivity;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.AdapterSchedule;
+import com.food.kuruyia.foodretriever.utils.DataType;
+import com.food.kuruyia.foodretriever.websocket.RequestFormatter;
+import com.food.kuruyia.foodretriever.websocket.ResponseParser;
 import com.food.kuruyia.foodretriever.websocket.WebSocketServiceCommunicator;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -41,8 +45,7 @@ public class ConnectActivity extends AppCompatActivity
 
         RecyclerView recyclerView = findViewById(R.id.discoveredRecycler);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this));
 
         m_adapter = new AdapterDiscovered(m_discoveredItemsList, this);
         recyclerView.setAdapter(m_adapter);
@@ -89,7 +92,6 @@ public class ConnectActivity extends AppCompatActivity
         m_serviceDiscovery.setCallback(this);
         m_serviceDiscovery.start();
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -141,11 +143,7 @@ public class ConnectActivity extends AppCompatActivity
     @Override
     public void onWSConnectionStatusChanged(boolean isConnected) {
         if (isConnected) {
-            Intent mainLaunch = new Intent(ConnectActivity.this, MainActivity.class);
-            mainLaunch.putExtra(MainActivity.EXTRA_ADDRESS, formatAddress(m_inputIP.getEditText().getText().toString()));
-
-            startActivity(mainLaunch);
-            m_serviceCommunicator.unbind();
+            m_serviceCommunicator.sendMessage(RequestFormatter.format(DataType.DATA_ESP_INIT, new JsonObject()));
         }
     }
 
@@ -161,7 +159,28 @@ public class ConnectActivity extends AppCompatActivity
 
     @Override
     public void onWSMessage(String message) {
+        ResponseParser parser = new ResponseParser(message);
+        if (parser.isReady()) {
+            final DataType responseType = parser.getType();
 
+            if (responseType == DataType.DATA_ESP_INIT) {
+                JsonObject data = parser.getData();
+
+                if (data.has("ready")) {
+                    boolean ready = data.get("ready").getAsBoolean();
+
+                    if (ready) {
+                        Intent mainLaunch = new Intent(ConnectActivity.this, MainActivity.class);
+                        mainLaunch.putExtra(MainActivity.EXTRA_ADDRESS, formatAddress(m_inputIP.getEditText().getText().toString()));
+
+                        startActivity(mainLaunch);
+                        m_serviceCommunicator.unbind();
+                    } else {
+                        Log.d(TAG, "not ready");
+                    }
+                }
+            }
+        }
     }
 
     @Override
