@@ -4,11 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class DataDogs implements Parcelable {
-    String m_dogName;
+    private String m_dogName;
 
-    float m_actualWeight;
-    boolean m_weightRegulated;
-    int m_expectedWeight;
+    private float m_actualWeight;
+    private boolean m_weightRegulated;
+    private int m_expectedWeight;
 
     public DataDogs() {
     }

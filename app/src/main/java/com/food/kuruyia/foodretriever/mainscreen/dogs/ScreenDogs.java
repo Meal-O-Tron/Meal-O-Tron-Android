@@ -83,7 +83,7 @@ public class ScreenDogs extends Fragment implements IFabInteract, IDataChange {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (isAdded()) {
                         // Changer la couleur si le nom diffère de celui présent dans le serveur
-                        if (!m_dataDogs.getDogName().equals(m_inputDogName.getEditText().getText().toString()))
+                        if (m_dataDogs.getDogName() == null || !m_dataDogs.getDogName().equals(m_inputDogName.getEditText().getText().toString()))
                             m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.warningOrange));
                         else
                             m_inputDogName.setBoxStrokeColor(getResources().getColor(R.color.colorSecondary));

@@ -13,6 +13,7 @@ import com.food.kuruyia.foodretriever.mainscreen.stats.ScreenStats;
 import com.food.kuruyia.foodretriever.mainscreen.stats.WeightFormatter;
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.utils.IFabInteract;
+import com.food.kuruyia.foodretriever.websocket.RequestFormatter;
 import com.food.kuruyia.foodretriever.websocket.ResponseParser;
 import com.food.kuruyia.foodretriever.websocket.WebSocketServiceCommunicator;
 import com.github.mikephil.charting.formatter.PercentFormatter;
@@ -52,10 +53,11 @@ public class MainActivity extends AppCompatActivity
     ScreenDogs m_screenDogs;
     DataDogs m_dataDogs = new DataDogs();
 
-    String m_serverAddress = "ws://192.168.43.88:8000/";
+    String m_serverAddress;
     WebSocketServiceCommunicator m_serviceCommunicator = new WebSocketServiceCommunicator(this);
 
     int m_selectedScreen = 0;
+    boolean m_hasLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,11 @@ public class MainActivity extends AppCompatActivity
             m_dataStats = savedInstanceState.getParcelable("Save.DataStats");
             m_dataSchedule = savedInstanceState.getParcelable("Save.DataSchedule");
             m_dataDogs = savedInstanceState.getParcelable("Save.DataDogs");
+
+            m_hasLoaded = savedInstanceState.getBoolean("Save.HasLoaded");
         }
+
+        m_serverAddress = getIntent().getStringExtra(EXTRA_ADDRESS);
 
         m_screenStats = ScreenStats.newInstance(m_dataStats);
         m_screenSchedule = ScreenSchedule.newInstance(m_dataSchedule);
@@ -139,6 +145,8 @@ public class MainActivity extends AppCompatActivity
         outState.putParcelable("Save.DataStats", m_dataStats);
         outState.putParcelable("Save.DataSchedule", m_dataSchedule);
         outState.putParcelable("Save.DataDogs", m_dataDogs);
+
+        outState.putBoolean("Save.HasLoaded", m_hasLoaded);
     }
 
     @Override
@@ -220,6 +228,9 @@ public class MainActivity extends AppCompatActivity
     public void onWSBindingChanged(boolean isBound) {
         if (isBound && !m_serviceCommunicator.isConnected())
             m_serviceCommunicator.connectWebsocket(m_serverAddress);
+
+        if (!m_hasLoaded && isBound && m_serviceCommunicator.isConnected())
+            m_serviceCommunicator.sendMessage(RequestFormatter.format(DataType.DATA_GLOBAL_RELOAD, new JsonObject()));
     }
 
     @Override
@@ -242,6 +253,8 @@ public class MainActivity extends AppCompatActivity
             } else if (responseType > DataType.DATA_DOG_START.ordinal() && responseType < DataType.DATA_DOG_END.ordinal()) {
                 m_screenDogs.onDataChanged(parser.getType(), parser.getData());
             } else if (parser.getType() == DataType.DATA_GLOBAL_RELOAD) {
+                m_hasLoaded = true;
+
                 JsonObject data = parser.getData();
                 if (data.has("stats")) {
                     JsonObject statsObject = data.getAsJsonObject("stats");
