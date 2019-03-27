@@ -26,4 +26,5 @@ public enum DataType {
 
     DATA_ESP_NETWORK,
     DATA_ESP_INIT,
+    DATA_ESP_WIFI_SCAN,
 }

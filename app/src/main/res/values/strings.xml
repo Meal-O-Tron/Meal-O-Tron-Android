@@ -36,4 +36,7 @@
     <!--Connect activity-->
     <string name="conact_address">IP Address</string>
     <string name="conact_connect">Connect</string>
+
+    <!--Setup activity-->
+    <string name="setact_title">Connect your Meal-o-Tron</string>
 </resources>

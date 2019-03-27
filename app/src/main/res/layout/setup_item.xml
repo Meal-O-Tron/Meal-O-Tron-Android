@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/mtrl_card_spacing"
+    android:layout_marginTop="@dimen/mtrl_card_spacing"
+    android:layout_marginRight="@dimen/mtrl_card_spacing"
+    app:cardCornerRadius="5dp"
+    android:id="@+id/setupItemCard">
+
+    <LinearLayout
+        android:id="@+id/setupItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="6dp"
+        android:clickable="false"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/setupNetworkName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="WiFi SSID"
+            android:textColor="@android:color/black"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/setupNetworkEncryption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="WPA (CCMP)" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

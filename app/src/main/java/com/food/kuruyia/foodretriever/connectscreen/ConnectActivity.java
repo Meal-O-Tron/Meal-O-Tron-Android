@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.food.kuruyia.foodretriever.R;
 import com.food.kuruyia.foodretriever.mainscreen.MainActivity;
 import com.food.kuruyia.foodretriever.mainscreen.schedule.AdapterSchedule;
+import com.food.kuruyia.foodretriever.setupscreen.SetupActivity;
 import com.food.kuruyia.foodretriever.utils.DataType;
 import com.food.kuruyia.foodretriever.websocket.RequestFormatter;
 import com.food.kuruyia.foodretriever.websocket.ResponseParser;
@@ -23,6 +24,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class ConnectActivity extends AppCompatActivity
     implements WebSocketServiceCommunicator.IWebSocketStateChange, WebSocketServiceCommunicator.IWebSocketMessage, ServiceDiscoveryCallback, IDiscoveryCallback {
@@ -170,13 +172,17 @@ public class ConnectActivity extends AppCompatActivity
                     boolean ready = data.get("ready").getAsBoolean();
 
                     if (ready) {
-                        Intent mainLaunch = new Intent(ConnectActivity.this, MainActivity.class);
-                        mainLaunch.putExtra(MainActivity.EXTRA_ADDRESS, formatAddress(m_inputIP.getEditText().getText().toString()));
+                        Intent mainLaunch = new Intent(this, MainActivity.class);
+                        mainLaunch.putExtra(MainActivity.EXTRA_ADDRESS, m_serviceCommunicator.getAddress());
 
                         startActivity(mainLaunch);
                         m_serviceCommunicator.unbind();
                     } else {
-                        Log.d(TAG, "not ready");
+                        Intent mainLaunch = new Intent(this, SetupActivity.class);
+                        mainLaunch.putExtra(MainActivity.EXTRA_ADDRESS, m_serviceCommunicator.getAddress());
+
+                        startActivity(mainLaunch);
+                        m_serviceCommunicator.unbind();
                     }
                 }
             }

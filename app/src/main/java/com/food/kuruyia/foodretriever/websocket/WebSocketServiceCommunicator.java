@@ -14,6 +14,7 @@ public class WebSocketServiceCommunicator {
     private static final String TAG = "ChatServiceComm";
 
     private boolean m_bound = false;
+    private String m_address;
 
     private IWebSocketStateChange m_stateChangedCallback;
     private IWebSocketMessage m_messageCallback;
@@ -91,8 +92,10 @@ public class WebSocketServiceCommunicator {
     }
 
     public void connectWebsocket(String address) {
-        if (m_bound && !m_webSocketService.isWebSocketConnected())
+        if (m_bound && !m_webSocketService.isWebSocketConnected()) {
             m_webSocketService.connect(address);
+            m_address = address;
+        }
     }
 
     public void setStateChangedCallback(IWebSocketStateChange stateChangedCallback) {
@@ -102,6 +105,7 @@ public class WebSocketServiceCommunicator {
     public void disconnectWebsocket() {
         if (m_bound) {
             m_webSocketService.disconnect();
+            m_address = "";
         }
     }
 
@@ -122,6 +126,10 @@ public class WebSocketServiceCommunicator {
 
     public boolean isBound() {
         return m_bound;
+    }
+
+    public String getAddress() {
+        return m_address;
     }
 
     public interface IWebSocketStateChange {
