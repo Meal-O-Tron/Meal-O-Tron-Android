@@ -30,16 +30,18 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/buttonWeigh"
+            android:id="@+id/buttonConnect"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="0"
             android:text="@string/conact_connect"
-            android:layout_gravity="center"/>
+            android:enabled="false"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/discoveredRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

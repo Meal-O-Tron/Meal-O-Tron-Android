@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final String MENU_BOTTOM_SHEET = "Tag.BottomNavigation";
+    public static final String EXTRA_ADDRESS = "Extra.Address";
 
     ScreenHome m_screenHome = new ScreenHome();
 

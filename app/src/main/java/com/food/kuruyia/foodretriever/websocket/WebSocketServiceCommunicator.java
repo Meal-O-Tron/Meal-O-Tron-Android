@@ -120,6 +120,10 @@ public class WebSocketServiceCommunicator {
         m_messageCallback = messageCallback;
     }
 
+    public boolean isBound() {
+        return m_bound;
+    }
+
     public interface IWebSocketStateChange {
         void onWSFailure();
         void onWSConnectionStatusChanged(boolean isConnected);
